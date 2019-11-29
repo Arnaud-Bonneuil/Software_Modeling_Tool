@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Top_Level_Package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<Name>Basic_Types</Name>
+	<Description>This package provides pre-defined basic data types which represent the types that any micro-controller could natively handle.</Description>
+	<UUID>35865e57-e35c-48d4-a100-72230e456b6b</UUID>
+	<Data_Types>
+        <Basic_Integer_Type>
+			<Name>sint8</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a signed integer value from -128 to 127.</Description>
+			<UUID>e6f0bcaa-8b2b-43b6-b1e5-553b4a3f74d0</UUID>
+		</Basic_Integer_Type>
+		
+		<Basic_Integer_Type>
+			<Name>uint8</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a unsigned integer value from 0 to 255.</Description>			
+			<UUID>058963e7-375f-4f57-aceb-5a2f36b75490</UUID>
+		</Basic_Integer_Type>
+		
+		<Basic_Integer_Type>
+			<Name>sint16</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a signed integer value from -32768 to 32767.</Description>			
+			<UUID>ebb36a0f-a588-4dc2-b4ff-03b59b7f0451</UUID>
+		</Basic_Integer_Type>	
+		
+		<Basic_Integer_Type>
+			<Name>uint16</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a unsigned integer value from 0 to 65535.</Description>			
+			<UUID>0d6a9487-2e1a-4d71-8dcb-52824fa8170d</UUID>
+		</Basic_Integer_Type>	
+		
+		<Basic_Integer_Type>
+			<Name>sint32</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a signed integer value from -2147483648 to 2147483647.</Description>			
+			<UUID>874ecc76-8567-4d26-babc-0a38a4c8e1df</UUID>
+		</Basic_Integer_Type>	
+		
+		<Basic_Integer_Type>
+			<Name>uint32</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a unsigned integer value from 0 to 4294967295.</Description>			
+			<UUID>3f1b684a-51d5-4374-a479-56bd195faa9e</UUID>
+		</Basic_Integer_Type>	
+		
+		<Basic_Integer_Type>
+			<Name>sint64</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a signed integer value from -9223372036854775808 to 9223372036854775807.</Description>			
+			<UUID>417d1937-91ff-4bc6-ad20-46b03d49d6b5</UUID>
+		</Basic_Integer_Type>
+		
+		<Basic_Integer_Type>
+			<Name>uint64</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing a unsigned integer value from 0 to 18446744073709551616.</Description>			
+			<UUID>f49b3ace-96bc-463c-8444-5436f4a801f1</UUID>
+		</Basic_Integer_Type>
+		
+		<Basic_Boolean_Type>
+			<Name>boolean</Name>
+			<Description>Pre-defined basic data types which allows to model a data representing boolean value. It can be true or false.</Description>			
+			<UUID>5df8e979-be4c-4790-87a7-f8ee053c4162</UUID>
+		</Basic_Boolean_Type>
+		
+		<Basic_Floating_Point_Type>
+			<Name>fp32</Name>
+			<Description></Description>			
+			<UUID>1045feea-03f6-4690-a89c-33134ec24f54</UUID>
+		</Basic_Floating_Point_Type>
+		
+		<Basic_Floating_Point_Type>
+			<Name>fp64</Name>
+			<Description></Description>			
+			<UUID>d74c7bfa-9e57-443f-ab99-96ab3cdcce0b</UUID>
+		</Basic_Floating_Point_Type>		
+	</Data_Types>
+</Top_Level_Package>
