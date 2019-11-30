@@ -1,0 +1,11 @@
+#Debug folder
+/bin/Debug
+/obj/
+
+*.v11.suo
+*.exe.config
+*.pdb
+*.vshost.exe
+*.vshost.exe.config
+*.vshost.exe.manifest
+bin/Release/Software_Modeling_Tool.xml

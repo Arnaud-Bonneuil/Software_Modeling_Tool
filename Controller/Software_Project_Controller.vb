@@ -10,7 +10,7 @@ Public Class Software_Project_Controller
     Private Is_Project_Loaded As Boolean
     Private Loaded_Project_Xml_File As String
     Private Is_Project_Modified As Boolean
-    Private My_Top_Level_Package_Controllers_List As List(Of Top_Level_Package_Controller)
+    Public My_Top_Level_Package_Controllers_List As List(Of Top_Level_Package_Controller)
 
     Public Sub Run()
         My_View.Display_Main_Window()
@@ -199,7 +199,7 @@ Public Class Software_Project_Controller
     '=============================================================================================='
     ' Public methods
     '=============================================================================================='
-    Sub Remove_Top_Level_Package(ctrl_to_remove As Top_Level_Package_Controller)
+    Public Sub Remove_Top_Level_Package(ctrl_to_remove As Top_Level_Package_Controller)
         ' Remove views
         ctrl_to_remove.Get_View.Delete_All_View()
 
@@ -294,7 +294,5 @@ Public Class Software_Project_Controller
         Is_Project_Modified = False
         My_Top_Level_Package_Controllers_List = Nothing
     End Sub
-
-
 
 End Class

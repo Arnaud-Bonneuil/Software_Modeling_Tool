@@ -58,13 +58,17 @@ Partial Public MustInherit Class Software_Element
         Dim path As String = ""
         Dim sw_element As Software_Element
         sw_element = CType(Me, Software_Element)
-        If Not IsNothing(sw_element.Parent) Then 'test if Me is a Model_Container
+        If Not IsNothing(sw_element.Parent) Then 'test if Me is a Top_Level_Package
             path = "/" & sw_element.Name
             sw_element = sw_element.Parent
             While Not IsNothing(sw_element.Parent)
                 path = "/" & sw_element.Name & path
                 sw_element = sw_element.Parent
             End While
+            path = "/" & sw_element.Name & path
+        Else
+            path = "/" & sw_element.Name
+
         End If
         Return path
     End Function

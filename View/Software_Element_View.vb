@@ -31,6 +31,13 @@ Public MustInherit Class Software_Element_View
         MsgBox(message_box_text, MsgBoxStyle.OkOnly, "Element view")
     End Sub
 
+    Public Sub Update_Model_Browser(
+            old_parent_ctrl As Software_Element_Controller,
+            new_parent_ctrl As Software_Element_Controller)
+        old_parent_ctrl.Get_View.Node.Nodes.Remove(Me.Node)
+        new_parent_ctrl.Get_View.Node.Nodes.Add(Me.Node)
+    End Sub
+
 
 End Class
 
@@ -130,14 +137,15 @@ Public Class Software_Element_Browser_Context_Menu
     Private Sub Edit_Element(sender As Object, e As EventArgs) Handles Sub_Context_Menu_Edit.Click
         Dim ctrl As Controller = Get_Controller()
         If Not IsNothing(ctrl) Then
-            'ctrl.Edit_Clicked()
+            ctrl.Edit_Context_Menu_Clicked()
         End If
     End Sub
 
     Private Sub Move_Element(sender As Object, e As EventArgs) Handles Sub_Context_Menu_Move.Click
-        Dim ctrl As Controller = Get_Controller()
+        Dim ctrl As Software_Element_Controller
+        ctrl = CType(Get_Controller(), Software_Element_Controller)
         If Not IsNothing(ctrl) Then
-            'ctrl.Move_Clicked()
+            ctrl.Move_Context_Menu_Clicked()
         End If
     End Sub
 
@@ -153,3 +161,48 @@ Public Class Software_Element_Browser_Context_Menu
 End Class
 
 
+
+Public Class Move_Window
+    Inherits Form
+
+    Private WithEvents Move_Button As Button
+
+    Private Destination_Element As ComboBox
+
+    Public Sub New(list As List(Of String))
+
+        Me.Text = "Select new parent :"
+        Dim box_size = New Size(300, 200)
+        Me.ClientSize = box_size
+        Me.FormBorderStyle = FormBorderStyle.Sizable
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.MaximumSize = New Size(800, 200)
+        Me.MinimumSize = box_size
+
+        Me.Destination_Element = New ComboBox
+        Dim path As String
+        For Each path In list
+            Me.Destination_Element.Items.Add(path)
+        Next
+        Me.Destination_Element.Anchor = AnchorStyles.Right Or AnchorStyles.Left
+        Me.Destination_Element.Location = New Point(20, 20)
+        Me.Destination_Element.Size = New Size(240, 25)
+        Me.Controls.Add(Me.Destination_Element)
+
+        Me.Move_Button = New Button
+        Me.Move_Button.Text = "Move"
+        Me.Move_Button.Location = New Point(110, 100)
+        Me.Controls.Add(Me.Move_Button)
+
+    End Sub
+
+    Private Sub Move_Pressed(sender As Object, e As EventArgs) Handles Move_Button.Click
+        Me.Close()
+    End Sub
+
+    Public Function Get_Destination() As String
+        Return Me.Destination_Element.Text
+    End Function
+
+End Class

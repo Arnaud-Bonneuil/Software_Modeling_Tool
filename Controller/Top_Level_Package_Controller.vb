@@ -5,7 +5,7 @@ Public Class Top_Level_Package_Controller
 
     Inherits Package_Controller
 
-    Private My_Project_Controller As Software_Project_Controller
+    Public My_Project_Controller As Software_Project_Controller
 
     Private Is_Modified As Boolean = False
 
