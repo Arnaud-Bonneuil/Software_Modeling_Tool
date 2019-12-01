@@ -12,6 +12,8 @@ Public Class Software_Project_Controller
     Private Is_Project_Modified As Boolean
     Public My_Top_Level_Package_Controllers_List As List(Of Top_Level_Package_Controller)
 
+    Public Controller_Dico_By_Element_UUID As New Dictionary(Of Guid, Software_Element_Controller)
+
     Public Sub Run()
         My_View.Display_Main_Window()
     End Sub
@@ -72,7 +74,8 @@ Public Class Software_Project_Controller
     ' Methods for model browser contextual menu
     '=============================================================================================='
     Public Overrides Sub Edit_Context_Menu_Clicked()
-        Dim edit_form As New Software_Element_Edition_Form(Me, My_Project.Name, My_Project.Description)
+        Dim edit_form As New Software_Element_Edition_Form(
+            Me, My_Project.Name, Guid.Empty, My_Project.Description)
         edit_form.ShowDialog()
     End Sub
 
@@ -184,7 +187,7 @@ Public Class Software_Project_Controller
                 new_pkg.Serialize_Package(new_pkg_file_stream)
                 new_pkg_file_stream.Close()
 
-                ' Update model browser
+                ' Create controller
                 My_View.Display_Is_Modified(My_Project.Name)
                 Dim pkg_ctrl As New Top_Level_Package_Controller(Me, new_pkg, My_View)
                 My_Top_Level_Package_Controllers_List.Add(pkg_ctrl)

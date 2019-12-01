@@ -32,10 +32,10 @@ Public Class Structured_Data_Type_Field_View
         My_Controller = a_ctrl
         Me.Node = New TreeNode(a_name)
         parent_view.Get_Node.Nodes.Add(Me.Node)
-        Me.Node.ImageKey = "Structured_Data_Type_Field"
-        Me.Node.SelectedImageKey = "Structured_Data_Type_Field"
+        Me.Node.ImageKey = "Enumerated_Data_Type_Enumeral"
+        Me.Node.SelectedImageKey = "Enumerated_Data_Type_Enumeral"
         Me.Node.Tag = My_Controller
-        'Node.ContextMenuStrip = CType(Node.TreeView, Model_Browser).Elmt_CtxtMenu
+        Node.ContextMenuStrip = CType(Node.TreeView, Model_Browser).Elmt_CtxtMenu
     End Sub
 
     Public Overloads Sub Display_Element(
@@ -73,7 +73,7 @@ Public Class Structured_Data_Type_Browser_Context_Menu
         Dim ctrl As Structured_Data_Type_Controller
         ctrl = CType(Get_Controller(), Structured_Data_Type_Controller)
         If Not IsNothing(ctrl) Then
-            'ctrl.Add_Field_Clicked()
+            ctrl.Add_Field_Context_Menu_Clicked()
         End If
     End Sub
 

@@ -10,12 +10,6 @@ Partial Public MustInherit Class Data_Type
         Return GetType(Package)
     End Function
 
-    Public Overrides Sub Add_Element(new_child As Software_Element)
-    End Sub
-
-    Public Overrides Sub Remove_Element(old_child As Software_Element)
-    End Sub
-
 End Class
 
 
@@ -87,24 +81,16 @@ Partial Public Class Enumerated_Data_Type_Enumeral
         Return GetType(Enumerated_Data_Type)
     End Function
 
-    Public Function Is_Value_Valid(value As String) As Boolean
+    Public Function Is_Value_Valid(value As UInteger) As Boolean
         Return True
     End Function
-
-    Public Overrides Sub Add_Element(new_child As Software_Element)
-        ' no child
-    End Sub
-
-    Public Overrides Sub Remove_Element(old_child As Software_Element)
-        ' no child
-    End Sub
 
 End Class
 
 
 
 '=================================================================================================='
-Partial Public MustInherit Class Data_Type_Base_Typed
+Partial Public MustInherit Class Typed_Data_Type
 
     Inherits Data_Type
 
@@ -116,21 +102,17 @@ End Class
 '=================================================================================================='
 Partial Public Class Array_Data_Type
 
-    Inherits Data_Type_Base_Typed
+    Inherits Typed_Data_Type
 
     Public Multiplicity As UInteger
 
-    Public Shared Function Is_Multiplicity_Valid(multiplicity As String) As Boolean
+    Public Shared Function Is_Multiplicity_Valid(multiplicity As UInteger) As Boolean
         Dim result As Boolean = True
-        Dim dummy As UInteger = 0
-        UInteger.TryParse(multiplicity, dummy)
-        If dummy = 0 Or dummy = 1 Then
+        If multiplicity = 0 Or multiplicity = 1 Then
             result = False
         End If
         Return result
     End Function
-
-
 
 End Class
 
@@ -138,7 +120,7 @@ End Class
 '=================================================================================================='
 Partial Public Class Physical_Data_Type
 
-    Inherits Data_Type_Base_Typed
+    Inherits Typed_Data_Type
 
     Public Unit As String
 
@@ -146,7 +128,7 @@ Partial Public Class Physical_Data_Type
 
     Public Offset As Decimal
 
-    Public Shared Function Is_Resolution_Valid(resol As String) As Boolean
+    Public Shared Function Is_Resolution_Valid(resol As Decimal) As Boolean
         Dim result As Boolean = True
         'Dim dummy As Decimal = 0
         'Decimal.TryParse(resol, _
@@ -159,7 +141,7 @@ Partial Public Class Physical_Data_Type
         Return result
     End Function
 
-    Public Shared Function Is_Offset_Valid(offset As String) As Boolean
+    Public Shared Function Is_Offset_Valid(offset As Decimal) As Boolean
         Dim result As Boolean = True
         'Dim dummy As Decimal = 0
         'result = Decimal.TryParse(offset, _
@@ -231,15 +213,4 @@ Partial Public Class Structured_Data_Type_Field
         Return GetType(Structured_Data_Type)
     End Function
 
-    Public Overrides Sub Add_Element(new_child As Software_Element)
-        ' no child
-    End Sub
-
-    Public Overrides Sub Remove_Element(old_child As Software_Element)
-        ' no child
-    End Sub
-
 End Class
-
-
-

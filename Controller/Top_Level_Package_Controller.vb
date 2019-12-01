@@ -13,10 +13,9 @@ Public Class Top_Level_Package_Controller
             a_prj_ctrl As Software_Project_Controller,
             a_package As Package,
             parent_view As View)
-        Me.Parent_Controller = Nothing ' by definition
         My_Project_Controller = a_prj_ctrl
-
         My_Package = a_package
+        Me.Get_Controller_Dico_By_Element_UUID.Add(My_Package.UUID, Me)
         My_Package_View = New Top_Level_Package_View(Me, a_package.Name,
                                                                 parent_view, a_package.Is_Read_Only)
         Create_Children_Controller()
@@ -36,7 +35,6 @@ Public Class Top_Level_Package_Controller
         If Me.Is_Modified = False Then
             ' Change package status
             Is_Modified = True
-
             ' Change views
             CType(My_Package_View, Top_Level_Package_View).Display_Is_Modified(My_Package.Name)
         End If
@@ -46,7 +44,6 @@ Public Class Top_Level_Package_Controller
         If Me.Is_Modified = True Then
             ' Change package status
             Is_Modified = False
-
             ' Change views
             CType(My_Package_View, Top_Level_Package_View).Display_Is_Saved(My_Package.Name)
         End If

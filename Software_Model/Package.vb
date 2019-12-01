@@ -55,7 +55,6 @@ Public Class Package
 
     Public Overrides Sub Post_Treat_After_Xml_Deserialization(is_read_only As Boolean)
         Me.Is_Read_Only = is_read_only
-        Me.Add_To_Project_Elements_List()
 
         If Not IsNothing(Me.Packages) Then
             Dim pkg As Package

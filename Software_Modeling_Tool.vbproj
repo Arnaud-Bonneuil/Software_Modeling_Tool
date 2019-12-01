@@ -71,7 +71,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\Controller.vb" />
-    <Compile Include="Controller\Data_Types_Controller.vb" />
+    <Compile Include="Controller\Data_Type\Array_Data_Type_Controller.vb" />
+    <Compile Include="Controller\Data_Type\Data_Types_Controller.vb" />
+    <Compile Include="Controller\Data_Type\Enumerated_Data_Type_Controller.vb" />
+    <Compile Include="Controller\Data_Type\Physical_Data_Type_Controller.vb" />
+    <Compile Include="Controller\Data_Type\Structured_Data_Type_Controller.vb" />
     <Compile Include="Controller\Package_Controller.vb" />
     <Compile Include="Controller\Software_Element_Controller.vb" />
     <Compile Include="Controller\Software_Project_Controller.vb" />
@@ -99,12 +103,16 @@
     <Compile Include="Software_Model\Software_Element.vb" />
     <Compile Include="Software_Modeling_Tool.vb" />
     <Compile Include="Software_Model\Top_Level_Package.vb" />
-    <Compile Include="View\Data_Types\Array_Data_Type_View.vb" />
+    <Compile Include="View\Data_Types\Array_Data_Type_View.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="View\Data_Types\Data_Types_View.vb" />
     <Compile Include="View\Data_Types\Enumerated_Data_Type_View.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\Data_Types\Physical_Data_Type_View.vb" />
+    <Compile Include="View\Data_Types\Physical_Data_Type_View.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="View\Main_Window.vb">
       <SubType>Form</SubType>
     </Compile>

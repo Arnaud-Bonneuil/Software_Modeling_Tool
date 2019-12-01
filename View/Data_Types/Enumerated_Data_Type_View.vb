@@ -38,17 +38,8 @@ Public Class Enumerated_Data_Type_Enumeral_View
         Node.ContextMenuStrip = CType(Node.TreeView, Model_Browser).Elmt_CtxtMenu
     End Sub
 
-    Public Overloads Sub Display_Element(
-            a_name As String,
-            a_uuid As Guid,
-            a_description As String,
-            a_value As UInteger)
-        Dim message_box_text As String
-        message_box_text = "Name : " & a_name & vbCrLf & vbCrLf & _
-            "UUID : " & a_uuid.ToString & vbCrLf & vbCrLf & _
-            "Description : " & a_description & vbCrLf & vbCrLf & _
-            "Value : " & a_value.ToString
-        MsgBox(message_box_text, MsgBoxStyle.OkOnly, "Enumeral view")
+    Public Sub Display_Value_Is_Invalid()
+        MsgBox("New value is invalid !", MsgBoxStyle.Critical, "Error")
     End Sub
 
 End Class
@@ -77,8 +68,46 @@ Public Class Enumerated_Data_Type_Browser_Context_Menu
         Dim ctrl As Enumerated_Data_Type_Controller
         ctrl = CType(Get_Controller(), Enumerated_Data_Type_Controller)
         If Not IsNothing(ctrl) Then
-            ' ctrl.Add_Enumeral_Clicked()
+            ctrl.Add_Enumeral_Context_Menu_Clicked()
         End If
+    End Sub
+
+End Class
+
+
+'=================================================================================================='
+Public Class Enumerated_Data_Type_Enumeral_Edition_Form
+
+    Inherits Software_Element_Edition_Form
+
+    Public Value_TextBox As TextBox
+
+    Public Sub New(
+        a_controller As Controller,
+        name_field As String,
+        uuid_field As Guid,
+        description_field As String,
+        value_field As UInteger)
+        MyBase.New(a_controller, name_field, uuid_field, description_field)
+
+        Dim value_title As New Label
+        value_title.Text = "Value"
+        value_title.Location = New Point(Left_Margin, 220)
+        value_title.Size = Edition_Form.Title_Size
+        Me.Controls.Add(value_title)
+
+        Me.Value_TextBox = New TextBox
+        Me.Value_TextBox.Text = CStr(value_field)
+        Me.Value_TextBox.Location = New Point(Field_Abscissa, 220)
+        Me.Value_TextBox.Size = New Size(Field_Width, Title_Height)
+        Me.Controls.Add(Me.Value_TextBox)
+
+        Me.Set_Height(340)
+    End Sub
+
+    Public Overrides Sub Set_Read_Only()
+        MyBase.Set_Read_Only()
+        Value_TextBox.ReadOnly = True
     End Sub
 
 End Class

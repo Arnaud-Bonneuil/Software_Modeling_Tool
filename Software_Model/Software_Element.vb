@@ -2,6 +2,8 @@
 Imports System.Xml.Serialization
 Imports System.Text.RegularExpressions
 
+
+
 '=================================================================================================='
 ' Software_Element
 '=================================================================================================='
@@ -23,36 +25,19 @@ Partial Public MustInherit Class Software_Element
     Public Children As List(Of Software_Element) = New List(Of Software_Element)
 
     Public MustOverride Function Get_Parent_MetaClass() As Type
-    Public MustOverride Sub Add_Element(new_child As Software_Element)
-    Public MustOverride Sub Remove_Element(old_child As Software_Element)
+
+    Public Overridable Sub Add_Element(new_child As Software_Element)
+        ' Nothing to do if leaf element
+    End Sub
+
+    Public Overridable Sub Remove_Element(old_child As Software_Element)
+        ' Nothing to do if leaf element
+    End Sub
 
     Public Overridable Sub Post_Treat_After_Xml_Deserialization(is_read_only As Boolean)
         Me.Is_Read_Only = is_read_only
-        Me.Add_To_Project_Elements_List()
         Me.Parent.Children.Add(Me)
     End Sub
-
-    Public Sub Add_To_Project_Elements_List()
-
-    End Sub
-
-    Public Function Get_Top_Level_Package() As Package
-        Dim root_package As Package = Nothing
-        Dim parent As Software_Element = Me.Parent
-        If IsNothing(parent) Then
-            root_package = Nothing ' Me = Model_Container
-        Else
-            If IsNothing(parent.Parent) Then
-                root_package = CType(Me, Package)
-            Else
-                While Not IsNothing(parent.Parent.Parent)
-                    parent = parent.Parent
-                End While
-                root_package = CType(parent, Package)
-            End If
-        End If
-        Return root_package
-    End Function
 
     Public Function Get_Path() As String
         Dim path As String = ""
@@ -114,37 +99,6 @@ Partial Public MustInherit Class Software_Element
         If Regex.IsMatch(symbol, "^[a-zA-Z][a-zA-Z0-9_]+$") Then
             result = True
         End If
-        Return result
-    End Function
-
-    Public Function Get_Elements_By_MetaClass(root As Software_Element, meta_class As Type) _
-        As List(Of Software_Element)
-        Dim result As New List(Of Software_Element)
-        root.Get_All_Element_By_MetaClass(result, meta_class)
-        Return result
-    End Function
-
-    Private Sub Get_All_Element_By_MetaClass(
-        ByRef list As List(Of Software_Element),
-        meta_class As Type)
-        Dim child As Software_Element
-        For Each child In Me.Children
-            If child.GetType = meta_class Then
-                list.Add(child)
-            End If
-            child.Get_All_Element_By_MetaClass(list, meta_class)
-        Next
-    End Sub
-
-    Public Function Get_Child_By_Name(child_name As String) As Software_Element
-        Dim result As Software_Element = Nothing
-        Dim child As Software_Element
-        For Each child In Me.Children
-            If child.Name = child_name Then
-                result = child
-                Exit For
-            End If
-        Next
         Return result
     End Function
 

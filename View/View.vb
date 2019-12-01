@@ -39,9 +39,10 @@ Public MustInherit Class Edition_Form
 
     Protected My_Controller As Controller
 
-    Private WithEvents Apply_Button As Button
+    Protected WithEvents Apply_Button As Button
 
     Public Name_TextBox As TextBox
+    Private UUID_TextBox As TextBox
     Public Description_TextBox As RichTextBox
 
     Protected Shared Left_Margin As Integer = 10
@@ -53,13 +54,14 @@ Public MustInherit Class Edition_Form
     Public Sub New(
         a_controller As Controller,
         name_field As String,
+        uuid_field As Guid,
         description_field As String)
 
         My_Controller = a_controller
 
         Me.Text = "Edit Software_Element"
-        Dim box_size = New Size(500, 600)
-        Me.ClientSize = box_size
+        Dim box_size = New Size(500, 300)
+        Me.Size = box_size
         Me.FormBorderStyle = FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -78,21 +80,34 @@ Public MustInherit Class Edition_Form
         Me.Name_TextBox.Size = New Size(Field_Width, Title_Height)
         Me.Controls.Add(Me.Name_TextBox)
 
+        Dim uuid_title As New Label
+        uuid_title.Text = "UUID"
+        uuid_title.Location = New Point(Left_Margin, 60)
+        uuid_title.Size = Edition_Form.Title_Size
+        Me.Controls.Add(uuid_title)
+
+        Me.UUID_TextBox = New TextBox
+        Me.UUID_TextBox.Text = uuid_field.ToString
+        Me.UUID_TextBox.ReadOnly = True
+        Me.UUID_TextBox.Location = New Point(Field_Abscissa, 60)
+        Me.UUID_TextBox.Size = New Size(Field_Width, Title_Height)
+        Me.Controls.Add(Me.UUID_TextBox)
+
         Dim description_title As New Label
         description_title.Text = "Description"
-        description_title.Location = New Point(Left_Margin, 60)
+        description_title.Location = New Point(Left_Margin, 100)
         description_title.Size = Edition_Form.Title_Size
         Me.Controls.Add(description_title)
 
         Me.Description_TextBox = New RichTextBox
         Me.Description_TextBox.Text = description_field
-        Me.Description_TextBox.Location = New Point(Field_Abscissa, 60)
+        Me.Description_TextBox.Location = New Point(Field_Abscissa, 100)
         Me.Description_TextBox.Size = New Size(Field_Width, 100)
         Me.Controls.Add(Me.Description_TextBox)
 
         Me.Apply_Button = New Button
         Me.Apply_Button.Text = "Apply"
-        Me.Apply_Button.Location = New Point(200, 500)
+        Me.Apply_Button.Location = New Point(213, 220)
         Me.Controls.Add(Apply_Button)
 
         Me.Name_TextBox.Select()
@@ -103,6 +118,15 @@ Public MustInherit Class Edition_Form
         My_Controller.Edition_Window_Apply_Button_Clicked(Me)
         Me.Close()
     End Sub
+
+    Public Sub Set_Height(new_height As Integer)
+        Dim new_size As New Size(500, new_height)
+        Me.Size = new_size
+        Me.MaximumSize = new_size
+        Me.MinimumSize = new_size
+        Me.Apply_Button.Location = New Point(Me.Apply_Button.Location.X, new_height - 80)
+    End Sub
+
 End Class
 
 

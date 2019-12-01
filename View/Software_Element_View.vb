@@ -13,29 +13,19 @@ Public MustInherit Class Software_Element_View
         MyBase.Update_All_Description_Views(new_description)
     End Sub
 
-    Public Overridable Sub Display_Predefined_Element(
-            a_name As String,
-            a_uuid As Guid,
-            a_descripttion As String)
-        Me.Display_Element(a_name, a_uuid, a_descripttion)
-    End Sub
-
-    Public Overridable Sub Display_Element(
-            a_name As String,
-            a_uuid As Guid,
-            a_descripttion As String)
-        Dim message_box_text As String
-        message_box_text = "Name : " & a_name & vbCrLf & vbCrLf & _
-            "UUID : " & a_uuid.ToString & vbCrLf & vbCrLf & _
-            "Description : " & a_descripttion
-        MsgBox(message_box_text, MsgBoxStyle.OkOnly, "Element view")
-    End Sub
-
     Public Sub Update_Model_Browser(
             old_parent_ctrl As Software_Element_Controller,
             new_parent_ctrl As Software_Element_Controller)
         old_parent_ctrl.Get_View.Node.Nodes.Remove(Me.Node)
         new_parent_ctrl.Get_View.Node.Nodes.Add(Me.Node)
+    End Sub
+
+    Sub Display_Name_Is_Invalid()
+        MsgBox("New name is invalid !", MsgBoxStyle.Critical, "Error")
+    End Sub
+
+    Sub Display_Description_Is_Invalid()
+        MsgBox("New description is invalid !", MsgBoxStyle.Critical, "Error")
     End Sub
 
 
@@ -52,8 +42,59 @@ Public Class Software_Element_Edition_Form
     Public Sub New(
         a_controller As Controller,
         name_field As String,
+        uuid_field As Guid,
         description_field As String)
-        MyBase.New(a_controller, name_field, description_field)
+        MyBase.New(a_controller, name_field, uuid_field, description_field)
+    End Sub
+
+    Public Overridable Sub Set_Read_Only()
+        Me.Text = "View element"
+        Me.Name_TextBox.ReadOnly = True
+        Me.Description_TextBox.ReadOnly = True
+        Me.Apply_Button.Hide()
+    End Sub
+
+End Class
+
+
+Public Class Typed_Software_Element_Edition_Form
+
+    Inherits Software_Element_Edition_Form
+
+    Public Base_Type_Ref_ComboBox As ComboBox
+
+    Public Sub New(
+        a_controller As Controller,
+        name_field As String,
+        uuid_field As Guid,
+        description_field As String,
+        base_type_ref_path As String,
+        data_type_path_list As List(Of String))
+        MyBase.New(a_controller, name_field, uuid_field, description_field)
+
+        Dim base_type_title As New Label
+        base_type_title.Text = "Base Data_Type"
+        base_type_title.Location = New Point(Left_Margin, 220)
+        base_type_title.Size = Edition_Form.Title_Size
+        Me.Controls.Add(base_type_title)
+
+        Me.Base_Type_Ref_ComboBox = New ComboBox
+        Base_Type_Ref_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList
+        If Not IsNothing(data_type_path_list) Then
+            Dim data_type_path As String
+            For Each data_type_path In data_type_path_list
+                Me.Base_Type_Ref_ComboBox.Items.Add(data_type_path)
+            Next
+        Else
+            Me.Base_Type_Ref_ComboBox.Items.Add(base_type_ref_path)
+        End If
+        Me.Base_Type_Ref_ComboBox.Text = base_type_ref_path
+        Me.Base_Type_Ref_ComboBox.Location = New Point(Field_Abscissa, 220)
+        Me.Base_Type_Ref_ComboBox.Size = New Size(Field_Width, Title_Height)
+        Me.Controls.Add(Me.Base_Type_Ref_ComboBox)
+
+        Me.Set_Height(340)
+
     End Sub
 
 End Class
@@ -161,7 +202,7 @@ Public Class Software_Element_Browser_Context_Menu
 End Class
 
 
-
+'=================================================================================================='
 Public Class Move_Window
     Inherits Form
 
