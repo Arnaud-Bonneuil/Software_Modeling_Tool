@@ -104,6 +104,10 @@ Public Class Software_Project_Controller
 
     End Sub
 
+    Public Overrides Sub Edition_Window_Closing(edition_form As Edition_Form)
+
+    End Sub
+
     Public Sub Save_Context_Menu_Clicked()
         Save_Project()
         Save_All_Top_Level_Packages()

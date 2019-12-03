@@ -123,7 +123,7 @@ Public Class Predefined_Element_Browser_Context_Menu
         Dim ctrl As Software_Element_Controller
         ctrl = CType(Get_Controller(), Software_Element_Controller)
         If Not IsNothing(ctrl) Then
-            ctrl.View_Predefined_Element_Context_Menu_Clicked()
+            ctrl.View_Element_Context_Menu_Clicked()
         End If
     End Sub
 

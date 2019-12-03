@@ -25,64 +25,49 @@ Public Class Physical_Data_Type_Controller
         My_View = New Physical_Data_Type_View(Me, My_Type.Name, parent_view)
     End Sub
 
-    Public Overrides Sub View_Element_Context_Menu_Clicked()
-        Dim element As Physical_Data_Type
-        element = CType(Get_Element(), Physical_Data_Type)
-        Dim edit_form As New Physical_Data_Type_Edition_Form(
-            Me,
-            element.Name,
-            element.UUID,
-            element.Description,
-            Get_Current_Base_Data_Type_Path,
-            Nothing,
-            element.Unit, element.Resolution, element.Offset)
-        edit_form.Set_Read_Only()
-        edit_form.ShowDialog()
-    End Sub
-
-    Public Overrides Sub Edit_Context_Menu_Clicked()
-
-        Dim element As Physical_Data_Type
-        element = CType(Get_Element(), Physical_Data_Type)
+    Public Overrides Function Create_Edition_Form() As Software_Element_Edition_Form
 
         ' Compute the list of possible Base_Data_Type_Ref
         Me.Update_Possible_Base_Data_Type_Ref()
 
         Dim edit_form As New Physical_Data_Type_Edition_Form(
             Me,
-            element.Name,
-            element.UUID,
-            element.Description,
+            My_Type.Name,
+            My_Type.UUID,
+            My_Type.Description,
             Get_Current_Base_Data_Type_Path, Me.Get_Possible_Base_Data_Type_Path_List,
-            element.Unit, element.Resolution, element.Offset)
-        edit_form.ShowDialog()
-    End Sub
+            My_Type.Unit, My_Type.Resolution, My_Type.Offset)
 
-    Public Overrides Sub Edition_Window_Apply_Button_Clicked(edit_win As Edition_Form)
+        Return edit_form
+    End Function
 
-        MyBase.Edition_Window_Apply_Button_Clicked(edit_win)
+    Public Overrides Function Treat_Edition_Form_Data(edition_form As Edition_Form) As Boolean
+        Dim phys_is_ok As Boolean = Me.Analyze_Edition_Form_Common_Data(edition_form)
 
-        Dim my_edit_window As Physical_Data_Type_Edition_Form
-        my_edit_window = CType(edit_win, Physical_Data_Type_Edition_Form)
+        Dim my_edit_form As Physical_Data_Type_Edition_Form
+        my_edit_form = CType(edition_form, Physical_Data_Type_Edition_Form)
 
-        My_Type.Unit = my_edit_window.Unit_TextBox.Text
-
-        Dim resolution As Decimal = CDec(my_edit_window.Resolution_TextBox.Text)
-        If Physical_Data_Type.Is_Resolution_Valid(resolution) Then
-            My_Type.Resolution = resolution
-        Else
+        Dim resolution As Decimal = CDec(my_edit_form.Resolution_TextBox.Text)
+        If Not Physical_Data_Type.Is_Resolution_Valid(resolution) Then
+            phys_is_ok = False
             My_View.Display_Resolution_Is_Invalid()
         End If
 
-        Dim offset As Decimal = CDec(my_edit_window.Offset_TextBox.Text)
-        If Physical_Data_Type.Is_Offset_Valid(offset) Then
-            My_Type.Offset = offset
-        Else
+        Dim offset As Decimal = CDec(my_edit_form.Offset_TextBox.Text)
+        If Not Physical_Data_Type.Is_Offset_Valid(offset) Then
+            phys_is_ok = False
             My_View.Display_Offset_Is_Invalid()
         End If
 
+        If phys_is_ok = True Then
+            Me.Apply_Edition_Form_Common_Data(edition_form)
+            Me.Apply_Base_Data_Type(edition_form)
+            My_Type.Unit = my_edit_form.Unit_TextBox.Text
+            My_Type.Resolution = resolution
+            My_Type.Offset = offset
+        End If
 
-
-    End Sub
+        Return phys_is_ok
+    End Function
 
 End Class

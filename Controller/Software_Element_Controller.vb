@@ -6,13 +6,17 @@ Public MustInherit Class Software_Element_Controller
     Inherits Controller
 
     Public Parent_Controller As Software_Element_Controller = Nothing
-
     Public Children_Controller As List(Of Software_Element_Controller) = _
                                                             New List(Of Software_Element_Controller)
+
+    Protected Is_Under_Creation As Boolean ' Indicates that I am temporarily created
 
     Public MustOverride Function Get_Element() As Software_Element
     Public MustOverride Function Get_View() As Software_Element_View
 
+    '=============================================================================================='
+    ' Public methods
+    '=============================================================================================='
     Public Sub Set_Parenthood(parent_ctrl As Software_Element_Controller)
         Me.Parent_Controller = parent_ctrl
         If Not IsNothing(parent_ctrl) Then
@@ -21,65 +25,121 @@ Public MustInherit Class Software_Element_Controller
         Me.Get_Controller_Dico_By_Element_UUID.Add(Get_Element.UUID, Me)
     End Sub
 
-    Public Overridable Sub Delete_My_View()
+    Public Function Get_Top_Level_Package_Controller() As Top_Level_Package_Controller
+        Dim top_ctrl As Top_Level_Package_Controller
+        Dim parent As Software_Element_Controller = Me.Parent_Controller
+        If IsNothing(parent) Then
+            top_ctrl = CType(Me, Top_Level_Package_Controller)
+        Else
+            While Not IsNothing(parent.Parent_Controller)
+                parent = parent.Parent_Controller
+            End While
+            top_ctrl = CType(parent, Top_Level_Package_Controller)
+        End If
+        Return top_ctrl
+    End Function
+
+    Public Function Get_Controller_Dico_By_Element_UUID() As  _
+                                                    Dictionary(Of Guid, Software_Element_Controller)
+        Dim top_ctrl As Top_Level_Package_Controller
+        top_ctrl = Get_Top_Level_Package_Controller()
+        Dim proj_ctrl As Software_Project_Controller
+        proj_ctrl = top_ctrl.My_Project_Controller
+        Return proj_ctrl.Controller_Dico_By_Element_UUID
+    End Function
+
+    Public Sub Set_Top_Level_Package_Controller_Status_To_Modified()
+        Dim top_ctrl As Top_Level_Package_Controller
+        top_ctrl = Me.Get_Top_Level_Package_Controller
+        top_ctrl.Set_Is_Modified()
     End Sub
 
-    Public Overridable Sub View_Element_Context_Menu_Clicked()
-        Dim element As Software_Element = Get_Element()
+    ' Basic edition form creation for element without specific attributes
+    ' It shall be overriden by the elements with specific attributes
+    Public Overridable Function Create_Edition_Form() As Software_Element_Edition_Form
+        Dim software_element As Software_Element = Get_Element()
         Dim edit_form As New Software_Element_Edition_Form(
             Me,
-            element.Name,
-            element.UUID,
-            element.Description)
-        edit_form.Set_Read_Only()
-        edit_form.ShowDialog()
+            software_element.Name,
+            software_element.UUID,
+            software_element.Description)
+        Return edit_form
+    End Function
+
+    ' Basic treatment procedure for element without specific attributes
+    ' It shall be overriden by the elements with specific attributes
+    Public Overridable Function Treat_Edition_Form_Data(edition_form As Edition_Form) As Boolean
+        Dim element_is_ok As Boolean = Me.Analyze_Edition_Form_Common_Data(edition_form)
+
+        If element_is_ok = True Then
+            Me.Apply_Edition_Form_Common_Data(edition_form)
+        End If
+
+        Return element_is_ok
+    End Function
+
+    Public Function Analyze_Edition_Form_Common_Data(edition_form As Edition_Form) As Boolean
+
+        Dim element_is_ok As Boolean = True
+        Dim element As Software_Element = Get_Element()
+        Dim view As Software_Element_View = Get_View()
+
+        ' Treat the new Name
+        Dim new_name As String = edition_form.Name_TextBox.Text
+        If Not element.Is_Name_Valid(new_name) Then
+            element_is_ok = False
+            view.Display_Name_Is_Invalid()
+        End If
+
+        ' Treat the new Description
+        Dim new_description As String = edition_form.Description_TextBox.Text
+        If Not element.Is_Description_Valid(new_description) Then
+            element_is_ok = False
+            view.Display_Description_Is_Invalid()
+        End If
+
+        ' Update the element data if all is ok
+        If element_is_ok = True Then
+
+        End If
+
+        Return element_is_ok
+    End Function
+
+    Public Sub Apply_Edition_Form_Common_Data(edition_form As Edition_Form)
+        Dim element As Software_Element = Get_Element()
+        Dim view As Software_Element_View = Get_View()
+
+        Dim new_name As String = edition_form.Name_TextBox.Text
+        element.Name = new_name
+        view.Update_All_Name_Views(new_name)
+
+        Dim new_description As String = edition_form.Description_TextBox.Text
+        element.Description = new_description
+        view.Update_All_Description_Views(new_description)
     End Sub
 
-    Public Overridable Sub View_Predefined_Element_Context_Menu_Clicked()
-        Dim element As Software_Element = Get_Element()
-        Dim edit_form As New Software_Element_Edition_Form(
-            Me,
-            element.Name,
-            element.UUID,
-            element.Description)
+    ' Shall be call by a parent controller to indicate that Me is temporarily created, waiting for 
+    ' valid data from the user.
+    Public Sub Set_Is_Under_Creation()
+        Is_Under_Creation = True
+    End Sub
+
+
+    '=============================================================================================='
+    ' Methods for model browser contextual menu
+    '=============================================================================================='
+    Public Sub View_Element_Context_Menu_Clicked()
+        Dim edit_form As Software_Element_Edition_Form
+        edit_form = Create_Edition_Form()
         edit_form.Set_Read_Only()
         edit_form.ShowDialog()
     End Sub
 
     Public Overrides Sub Edit_Context_Menu_Clicked()
-        Dim element As Software_Element = Get_Element()
-        Dim edit_form As New Software_Element_Edition_Form(
-            Me,
-            element.Name,
-            element.UUID,
-            element.Description)
+        Dim edit_form As Software_Element_Edition_Form
+        edit_form = Create_Edition_Form()
         edit_form.ShowDialog()
-    End Sub
-
-    Public Overrides Sub Edition_Window_Apply_Button_Clicked(edit_win As Edition_Form)
-        Dim element As Software_Element = Get_Element()
-        Dim view As Software_Element_View = Get_View()
-        Dim new_name As String = edit_win.Name_TextBox.Text
-        Dim new_description As String = edit_win.Description_TextBox.Text
-
-        ' Treat the new Name
-        If element.Is_Name_Valid(new_name) Then
-            element.Name = new_name
-            view.Update_All_Name_Views(new_name)
-        Else
-            view.Display_Name_Is_Invalid()
-        End If
-
-        ' Treat the new Description
-        If element.Is_Description_Valid(new_description) Then
-            element.Description = new_description
-            view.Update_All_Description_Views(new_description)
-        Else
-            view.Display_Description_Is_Invalid()
-        End If
-
-        Me.Set_Top_Level_Package_Controller_Status_To_Modified()
-
     End Sub
 
     Public Sub Move_Context_Menu_Clicked()
@@ -141,35 +201,45 @@ Public MustInherit Class Software_Element_Controller
         Me.Set_Top_Level_Package_Controller_Status_To_Modified()
     End Sub
 
-    Public Function Get_Top_Level_Package_Controller() As Top_Level_Package_Controller
-        Dim top_ctrl As Top_Level_Package_Controller
-        Dim parent As Software_Element_Controller = Me.Parent_Controller
-        If IsNothing(parent) Then
-            top_ctrl = CType(Me, Top_Level_Package_Controller)
-        Else
-            While Not IsNothing(parent.Parent_Controller)
-                parent = parent.Parent_Controller
-            End While
-            top_ctrl = CType(parent, Top_Level_Package_Controller)
+    Public Overrides Sub Edition_Window_Apply_Button_Clicked(edit_win As Edition_Form)
+
+        Dim element_is_ok As Boolean
+        element_is_ok = Treat_Edition_Form_Data(edit_win)
+
+        If element_is_ok = True Then
+            Me.Set_Top_Level_Package_Controller_Status_To_Modified()
+
+            ' Eventually indicates that the creation is ok (if edition form has been opened from 
+            ' a creation function)
+            Me.Is_Under_Creation = False
+
+            edit_win.Close()
         End If
-        Return top_ctrl
-    End Function
 
-    Public Function Get_Controller_Dico_By_Element_UUID() As  _
-                                                    Dictionary(Of Guid, Software_Element_Controller)
-        Dim top_ctrl As Top_Level_Package_Controller
-        top_ctrl = Get_Top_Level_Package_Controller()
-        Dim proj_ctrl As Software_Project_Controller
-        proj_ctrl = top_ctrl.My_Project_Controller
-        Return proj_ctrl.Controller_Dico_By_Element_UUID
-    End Function
-
-    Public Sub Set_Top_Level_Package_Controller_Status_To_Modified()
-        Dim top_ctrl As Top_Level_Package_Controller
-        top_ctrl = Me.Get_Top_Level_Package_Controller
-        top_ctrl.Set_Is_Modified()
     End Sub
 
+    Public Overrides Sub Edition_Window_Closing(edition_form As Edition_Form)
+        If Me.Is_Under_Creation = True Then
+            ' The edition window has been opened to set the data of a new element
+            ' It is closed without successful 'Apply' : the new element must be destroyed
+
+            ' Delete the view
+            Dim view As Software_Element_View = Get_View()
+            view.Delete_All_View()
+
+            ' Delete the element and its children
+            Dim element As Software_Element = Get_Element()
+            element.Parent.Remove_Element(element)
+
+            ' Delete the controller and its children
+
+        End If
+    End Sub
+
+
+    '=============================================================================================='
+    ' Private methods
+    '=============================================================================================='
     Private Function Get_Controllers_By_Element_MetaClass(sw_elmt_type As Type) _
                                                              As List(Of Software_Element_Controller)
         Dim ctrl_list As New List(Of Software_Element_Controller)
@@ -279,9 +349,7 @@ Public MustInherit Class Typed_Software_Element_Controller
         Return Me.Possible_Base_Data_Type_Ctrl.Keys.ToList
     End Function
 
-    Public Overrides Sub Edition_Window_Apply_Button_Clicked(edit_win As Edition_Form)
-
-        MyBase.Edition_Window_Apply_Button_Clicked(edit_win)
+    Public Sub Apply_Base_Data_Type(edit_win As Edition_Form)
 
         Dim my_edit_window As Typed_Software_Element_Edition_Form
         my_edit_window = CType(edit_win, Typed_Software_Element_Edition_Form)

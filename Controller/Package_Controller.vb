@@ -69,10 +69,10 @@ Public Class Package_Controller
 
         ' Create its controller
         Dim new_ctrl As New Package_Controller(new_package, Me, My_Package_View)
-        'new_ctrl.Parent_Controller = Me
-        'Me.Children_Controller.Add(new_ctrl)
+        new_ctrl.Set_Is_Under_Creation()
+        Dim edit_form As Software_Element_Edition_Form = new_ctrl.Create_Edition_Form()
+        edit_form.ShowDialog()
 
-        Me.Set_Top_Level_Package_Controller_Status_To_Modified()
     End Sub
 
     Public Sub Add_Enum_Context_Menu_Clicked()
@@ -84,10 +84,10 @@ Public Class Package_Controller
 
         ' Create its controller
         Dim new_ctrl As New Enumerated_Data_Type_Controller(new_enum, Me, My_Package_View)
-        'new_ctrl.Parent_Controller = Me
-        'Me.Children_Controller.Add(new_ctrl)
+        new_ctrl.Set_Is_Under_Creation()
+        Dim edit_form As Software_Element_Edition_Form = new_ctrl.Create_Edition_Form()
+        edit_form.ShowDialog()
 
-        Me.Set_Top_Level_Package_Controller_Status_To_Modified()
     End Sub
 
     Sub Add_Array_Context_Menu_Clicked()
@@ -99,10 +99,9 @@ Public Class Package_Controller
 
         ' Create its controller
         Dim new_ctrl As New Array_Data_Type_Controller(new_array, Me, My_Package_View)
-        'new_ctrl.Parent_Controller = Me
-        'Me.Children_Controller.Add(new_ctrl)
-
-        Me.Set_Top_Level_Package_Controller_Status_To_Modified()
+        new_ctrl.Set_Is_Under_Creation()
+        Dim edit_form As Software_Element_Edition_Form = new_ctrl.Create_Edition_Form()
+        edit_form.ShowDialog()
     End Sub
 
     Sub Add_Physical_Context_Menu_Clicked()
@@ -114,10 +113,9 @@ Public Class Package_Controller
 
         ' Create its controller
         Dim new_ctrl As New Physical_Data_Type_Controller(new_phys, Me, My_Package_View)
-        'new_ctrl.Parent_Controller = Me
-        'Me.Children_Controller.Add(new_ctrl)
-
-        Me.Set_Top_Level_Package_Controller_Status_To_Modified()
+        new_ctrl.Set_Is_Under_Creation()
+        Dim edit_form As Software_Element_Edition_Form = new_ctrl.Create_Edition_Form()
+        edit_form.ShowDialog()
     End Sub
 
     Sub Add_Struct_Context_Menu_Clicked()
@@ -129,12 +127,9 @@ Public Class Package_Controller
 
         ' Create its controller
         Dim new_ctrl As New Structured_Data_Type_Controller(new_struct, Me, My_Package_View)
-        'new_ctrl.Parent_Controller = Me
-        'Me.Children_Controller.Add(new_ctrl)
-
-        Me.Set_Top_Level_Package_Controller_Status_To_Modified()
+        new_ctrl.Set_Is_Under_Creation()
+        Dim edit_form As Software_Element_Edition_Form = new_ctrl.Create_Edition_Form()
+        edit_form.ShowDialog()
     End Sub
 
 End Class
-
-

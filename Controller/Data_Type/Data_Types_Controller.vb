@@ -21,13 +21,10 @@ Public Class Basic_Data_Type_Controller
         My_View = New Basic_Data_Type_View(Me, My_Type.Name, parent_view)
     End Sub
 
-    Public Overrides Sub Edit_Context_Menu_Clicked()
-        ' Basic_Data_Type shall not be edited
-    End Sub
-
-    Public Overrides Sub Edition_Window_Apply_Button_Clicked(edit_win As Edition_Form)
-        ' Basic_Data_Type shall not be edited
-    End Sub
+    Public Overrides Function Treat_Edition_Form_Data(edition_form As Edition_Form) As Boolean
+        ' A Basic_Data_Type shall never be edited
+        Return False
+    End Function
 
 End Class
 
@@ -90,9 +87,8 @@ Public MustInherit Class Typed_Data_Type_Controller
         Return Me.Possible_Base_Data_Type_Ctrl.Keys.ToList
     End Function
 
-    Public Overrides Sub Edition_Window_Apply_Button_Clicked(edit_win As Edition_Form)
 
-        MyBase.Edition_Window_Apply_Button_Clicked(edit_win)
+    Public Sub Apply_Base_Data_Type(edit_win As Edition_Form)
 
         Dim my_edit_window As Typed_Software_Element_Edition_Form
         my_edit_window = CType(edit_win, Typed_Software_Element_Edition_Form)
@@ -105,5 +101,4 @@ Public MustInherit Class Typed_Data_Type_Controller
             Get_Typed_Element.Base_Data_Type_Ref = base_data_type_uuid
         End If
     End Sub
-
 End Class

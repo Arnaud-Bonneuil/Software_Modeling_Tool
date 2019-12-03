@@ -116,7 +116,10 @@ Public MustInherit Class Edition_Form
 
     Private Sub Apply_Pressed(sender As Object, e As EventArgs) Handles Apply_Button.Click
         My_Controller.Edition_Window_Apply_Button_Clicked(Me)
-        Me.Close()
+    End Sub
+
+    Private Sub Close_Pressed(sender As Object, e As EventArgs) Handles Me.FormClosing
+        My_Controller.Edition_Window_Closing(Me)
     End Sub
 
     Public Sub Set_Height(new_height As Integer)
