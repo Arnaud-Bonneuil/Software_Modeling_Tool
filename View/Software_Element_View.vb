@@ -32,6 +32,11 @@ Public MustInherit Class Software_Element_View
         MsgBox("New base data type is invalid !", MsgBoxStyle.Critical, "Error")
     End Sub
 
+    Sub Display_New_Parent_Has_A_Child_With_Same_Name()
+        MsgBox("New parent has a child with the same name as the moved element !",
+               MsgBoxStyle.Critical, "Error")
+    End Sub
+
 End Class
 
 
@@ -60,6 +65,9 @@ Public Class Software_Element_Edition_Form
 End Class
 
 
+'=================================================================================================='
+
+'=================================================================================================='
 Public Class Typed_Software_Element_Edition_Form
 
     Inherits Software_Element_Edition_Form
@@ -204,6 +212,8 @@ Public Class Software_Element_Browser_Context_Menu
 
 End Class
 
+
+'=================================================================================================='
 
 '=================================================================================================='
 Public Class Move_Window

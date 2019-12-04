@@ -190,25 +190,41 @@ Public MustInherit Class Software_Element_Controller
         Dim move_form As New Move_Window(parent_ctrl_dic.Keys.ToList)
         move_form.ShowDialog()
 
-        ' Once moving window is closed, move the element
+        ' Once moving window is closed, check the destination
         Dim new_parent_path As String = move_form.Get_Destination
         ' If the choosen Parent is with the list of possible
         If parent_ctrl_dic.ContainsKey(new_parent_path) Then
 
-            ' Remove Me from my current Parent
-            Me.Set_Top_Level_Package_Controller_Status_To_Modified()
-            Dim view As Software_Element_View = Get_View()
-            moved_element.Parent.Remove_Element(moved_element)
-            Me.Parent_Controller.Children_Controller.Remove(Me)
-
-            ' Add Me to my new Parent
             Dim new_parent_ctrl As Software_Element_Controller = parent_ctrl_dic(new_parent_path)
-            Dim new_parent As Software_Element = new_parent_ctrl.Get_Element
-            new_parent.Add_Element(moved_element)
-            new_parent_ctrl.Set_Top_Level_Package_Controller_Status_To_Modified()
 
-            ' Updte model browser
-            view.Update_Model_Browser(Me.Parent_Controller, new_parent_ctrl)
+            ' Check that the new prent has not already a child with the name as the Software_Element
+            Dim name_is_unique As Boolean = True
+            For Each ctrl In new_parent_ctrl.Children_Controller
+                If ctrl.Get_Element.Name = moved_element.Name Then
+                    name_is_unique = False
+                    Exit For
+                End If
+            Next
+
+            If name_is_unique = False Then
+                Me.Get_View.Display_New_Parent_Has_A_Child_With_Same_Name()
+            Else
+                ' Move the element
+
+                ' Remove Me from my current Parent
+                Me.Set_Top_Level_Package_Controller_Status_To_Modified()
+                Dim view As Software_Element_View = Get_View()
+                moved_element.Parent.Remove_Element(moved_element)
+                Me.Parent_Controller.Children_Controller.Remove(Me)
+
+                ' Add Me to my new Parent
+                Dim new_parent As Software_Element = new_parent_ctrl.Get_Element
+                new_parent.Add_Element(moved_element)
+                new_parent_ctrl.Set_Top_Level_Package_Controller_Status_To_Modified()
+
+                ' Updte model browser
+                view.Update_Model_Browser(Me.Parent_Controller, new_parent_ctrl)
+            End If
         End If
 
     End Sub
