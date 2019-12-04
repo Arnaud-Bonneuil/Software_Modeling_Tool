@@ -1,16 +1,14 @@
 ﻿'=================================================================================================='
 Public Class Array_Data_Type_Controller
 
-    Inherits Typed_Data_Type_Controller
+    Inherits Software_Element_Controller
 
     Private My_Array As Array_Data_Type
     Private My_View As Array_Data_Type_View
 
-    Public Overrides Function Get_Element() As Software_Element
-        Return My_Array
-    End Function
+    Private My_Data_Type_Mngr As New Based_Data_Type_Manager
 
-    Public Overrides Function Get_Typed_Element() As Typed_Data_Type
+    Public Overrides Function Get_Element() As Software_Element
         Return My_Array
     End Function
 
@@ -28,15 +26,15 @@ Public Class Array_Data_Type_Controller
     Public Overrides Function Create_Edition_Form() As Software_Element_Edition_Form
 
         ' Compute the list of possible Base_Data_Type_Ref
-        Me.Update_Possible_Base_Data_Type_Ref()
+        My_Data_Type_Mngr.Update_Possible_Base_Data_Type_Ref(Me)
 
         Dim edit_form As New Array_Data_Type_Edition_Form(
             Me,
             My_Array.Name,
             My_Array.UUID,
             My_Array.Description,
-            Get_Current_Base_Data_Type_Path,
-            Me.Get_Possible_Base_Data_Type_Path_List,
+            My_Data_Type_Mngr.Get_Current_Base_Data_Type_Path(Me, My_Array.Base_Data_Type_Ref),
+            My_Data_Type_Mngr.Get_Possible_Base_Data_Type_Path_List,
             My_Array.Multiplicity)
 
         Return edit_form
@@ -54,10 +52,17 @@ Public Class Array_Data_Type_Controller
             My_View.Display_Multiplicity_Is_Invalid()
         End If
 
+        Dim new_base_data_type_path = my_edit_form.Base_Type_Ref_ComboBox.Text
+        If Not Me.My_Data_Type_Mngr.Check_Base_Data_Type_Validity(new_base_data_type_path) Then
+            array_is_ok = False
+            My_View.Display_Base_Data_Type_Is_Invalid()
+        End If
+
         If array_is_ok = True Then
             Me.Apply_Edition_Form_Common_Data(edition_form)
-            Me.Apply_Base_Data_Type(edition_form)
             My_Array.Multiplicity = multiplicity
+            My_Array.Base_Data_Type_Ref = _
+                My_Data_Type_Mngr.Get_New_Base_Data_Type_Ref(new_base_data_type_path)
         End If
 
         Return array_is_ok

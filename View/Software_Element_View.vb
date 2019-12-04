@@ -20,14 +20,17 @@ Public MustInherit Class Software_Element_View
         new_parent_ctrl.Get_View.Node.Nodes.Add(Me.Node)
     End Sub
 
-    Sub Display_Name_Is_Invalid()
+    Public Sub Display_Name_Is_Invalid()
         MsgBox("New name is invalid !", MsgBoxStyle.Critical, "Error")
     End Sub
 
-    Sub Display_Description_Is_Invalid()
+    Public Sub Display_Description_Is_Invalid()
         MsgBox("New description is invalid !", MsgBoxStyle.Critical, "Error")
     End Sub
 
+    Public Sub Display_Base_Data_Type_Is_Invalid()
+        MsgBox("New base data type is invalid !", MsgBoxStyle.Critical, "Error")
+    End Sub
 
 End Class
 

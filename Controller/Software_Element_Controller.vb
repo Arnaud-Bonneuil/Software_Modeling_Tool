@@ -48,6 +48,31 @@ Public MustInherit Class Software_Element_Controller
         Return proj_ctrl.Controller_Dico_By_Element_UUID
     End Function
 
+
+    ' Return the list of a the controller of a Data_Type within the project
+    Public Function Get_Controllers_Of_Data_Type() As List(Of Software_Element_Controller)
+
+        Dim ctrl_list As New List(Of Software_Element_Controller)
+
+        ' Get project controller
+        Dim project_ctrl As Software_Project_Controller
+        project_ctrl = Me.Get_Top_Level_Package_Controller.My_Project_Controller
+
+        Dim top_pkg_ctrl As Top_Level_Package_Controller
+        For Each top_pkg_ctrl In project_ctrl.My_Top_Level_Package_Controllers_List
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, GetType(Enumerated_Data_Type))
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, GetType(Array_Data_Type))
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, GetType(Physical_Data_Type))
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, GetType(Structured_Data_Type))
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, GetType(Basic_Integer_Type))
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, GetType(Basic_Boolean_Type))
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list,
+                                                                 GetType(Basic_Floating_Point_Type))
+        Next
+
+        Return ctrl_list
+    End Function
+
     Public Sub Set_Top_Level_Package_Controller_Status_To_Modified()
         Dim top_ctrl As Top_Level_Package_Controller
         top_ctrl = Me.Get_Top_Level_Package_Controller
@@ -253,13 +278,13 @@ Public MustInherit Class Software_Element_Controller
             If sw_elmt_type = GetType(Package) Then
                 ctrl_list.Add(top_pkg_ctrl)
             End If
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, sw_elmt_type)
+            top_pkg_ctrl.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, sw_elmt_type)
         Next
 
         Return ctrl_list
     End Function
 
-    Private Sub Get_All_Controllers_By_Element_MetaClass(
+    Private Sub Get_All_Ctrl_By_Elmt_MetaClass(
         ByRef ctrl_list As List(Of Software_Element_Controller),
         meta_class As Type)
         Dim child As Software_Element_Controller
@@ -267,68 +292,53 @@ Public MustInherit Class Software_Element_Controller
             If child.Get_Element.GetType = meta_class Then
                 ctrl_list.Add(child)
             End If
-            child.Get_All_Controllers_By_Element_MetaClass(ctrl_list, meta_class)
+            child.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, meta_class)
         Next
     End Sub
-
-    Public Function Get_Controllers_Of_Data_Type() As List(Of Software_Element_Controller)
-
-        Dim ctrl_list As New List(Of Software_Element_Controller)
-
-        ' Get project controller
-        Dim project_ctrl As Software_Project_Controller
-        project_ctrl = Me.Get_Top_Level_Package_Controller.My_Project_Controller
-
-        Dim top_pkg_ctrl As Top_Level_Package_Controller
-        For Each top_pkg_ctrl In project_ctrl.My_Top_Level_Package_Controllers_List
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, GetType(Enumerated_Data_Type))
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, GetType(Array_Data_Type))
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, GetType(Physical_Data_Type))
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, GetType(Structured_Data_Type))
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, GetType(Basic_Integer_Type))
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, GetType(Basic_Boolean_Type))
-            top_pkg_ctrl.Get_All_Controllers_By_Element_MetaClass(ctrl_list, GetType(Basic_Floating_Point_Type))
-        Next
-
-        Return ctrl_list
-    End Function
 
 End Class
 
 
 
 '=================================================================================================='
-
+' This class shall be used by each Software_Element which has a Base_Data_Type_Ref
 '=================================================================================================='
-Public MustInherit Class Typed_Software_Element_Controller
-
-    Inherits Software_Element_Controller
+Public Class Based_Data_Type_Manager
 
     Private Possible_Base_Data_Type_Ctrl As New Dictionary(Of String, Software_Element_Controller)
 
-    Public MustOverride Function Get_Typed_Element() As Typed_Software_Element
+    Public Function Get_Current_Base_Data_Type_Path(
+            ctrl As Software_Element_Controller,
+            data_type_ref As Guid) As String
 
-    Protected Function Get_Current_Base_Data_Type_Path() As String
-        Dim element As Typed_Software_Element
-        element = Get_Typed_Element()
+        ' Initialize the returned path
         Dim base_data_type_path As String = "Unresolved"
+
+        ' Get the dictionary of Controller by Software_Element UUID
         Dim ctrl_dico As Dictionary(Of Guid, Software_Element_Controller)
-        ctrl_dico = Me.Get_Controller_Dico_By_Element_UUID
-        If ctrl_dico.ContainsKey(element.Base_Data_Type_Ref) Then
+        ctrl_dico = ctrl.Get_Controller_Dico_By_Element_UUID
+
+        ' Test if the referenced Data_Type is known
+        If ctrl_dico.ContainsKey(data_type_ref) Then
+
+            ' Get the controller of the referenced Data_Type
             Dim base_data_type_ctrl As Software_Element_Controller
-            base_data_type_ctrl = ctrl_dico(element.Base_Data_Type_Ref)
+            base_data_type_ctrl = ctrl_dico(data_type_ref)
+
+            ' Get the path of the referenced Data_Type
             base_data_type_path = base_data_type_ctrl.Get_Element.Get_Path
         End If
+
         Return base_data_type_path
     End Function
 
-    Protected Sub Update_Possible_Base_Data_Type_Ref(ctrl_to_remove As Software_Element_Controller)
+    Public Sub Update_Possible_Base_Data_Type_Ref(ctrl_to_remove As Software_Element_Controller)
         ' Initialize the dictionary
         Me.Possible_Base_Data_Type_Ctrl.Clear()
 
         ' Get the list of controller of Data_Type
         Dim base_data_type_ctrl_list As List(Of Software_Element_Controller)
-        base_data_type_ctrl_list = Get_Controllers_Of_Data_Type()
+        base_data_type_ctrl_list = ctrl_to_remove.Get_Controllers_Of_Data_Type()
         base_data_type_ctrl_list.Remove(ctrl_to_remove)
 
         ' Build the dictionary
@@ -337,30 +347,23 @@ Public MustInherit Class Typed_Software_Element_Controller
         Next
     End Sub
 
-    Protected Function Get_Possible_Base_Data_Type_Ctrl(data_type_path As String) As Software_Element_Controller
-        If Me.Possible_Base_Data_Type_Ctrl.ContainsKey(data_type_path) Then
-            Return Possible_Base_Data_Type_Ctrl(data_type_path)
-        Else
-            Return Nothing
-        End If
-    End Function
-
-    Protected Function Get_Possible_Base_Data_Type_Path_List() As List(Of String)
+    Public Function Get_Possible_Base_Data_Type_Path_List() As List(Of String)
         Return Me.Possible_Base_Data_Type_Ctrl.Keys.ToList
     End Function
 
-    Public Sub Apply_Base_Data_Type(edit_win As Edition_Form)
-
-        Dim my_edit_window As Typed_Software_Element_Edition_Form
-        my_edit_window = CType(edit_win, Typed_Software_Element_Edition_Form)
-
-        Dim new_base_data_type_path As String = my_edit_window.Base_Type_Ref_ComboBox.Text
-        If Me.Get_Possible_Base_Data_Type_Path_List.Contains(new_base_data_type_path) Then
-            Dim base_data_type_ctrl As Software_Element_Controller
-            base_data_type_ctrl = Me.Get_Possible_Base_Data_Type_Ctrl(new_base_data_type_path)
-            Dim base_data_type_uuid = base_data_type_ctrl.Get_Element.UUID
-            Get_Typed_Element.Base_Data_Type_Ref = base_data_type_uuid
+    Public Function Check_Base_Data_Type_Validity(data_type_path As String) As Boolean
+        If Me.Get_Possible_Base_Data_Type_Path_List.Contains(data_type_path) Then
+            Return True
+        Else
+            Return False
         End If
-    End Sub
+    End Function
+
+    Public Function Get_New_Base_Data_Type_Ref(data_type_path As String) As Guid
+        Dim base_data_type_ctrl As Software_Element_Controller
+        base_data_type_ctrl = Me.Possible_Base_Data_Type_Ctrl(data_type_path)
+        Dim base_data_type_uuid = base_data_type_ctrl.Get_Element.UUID
+        Return base_data_type_uuid
+    End Function
 
 End Class
