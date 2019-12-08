@@ -28,12 +28,21 @@ Public Class Package_Controller
     End Function
 
     Public Sub Create_Children_Controller()
+
+        If Not IsNothing(My_Package.Model_Diagrams) Then
+            Dim diagram As Model_Diagram
+            For Each diagram In My_Package.Model_Diagrams
+                Dim diagram_ctrl As New Model_Diagram_Controller(diagram, Me, My_Package_View)
+            Next
+        End If
+
         If Not IsNothing(My_Package.Packages) Then
             Dim pkg As Package
             For Each pkg In My_Package.Packages
                 Dim pkg_ctrl As New Package_Controller(pkg, Me, My_Package_View)
             Next
         End If
+
         If Not IsNothing(My_Package.Data_Types) Then
             Dim type As Data_Type
             For Each type In My_Package.Data_Types
@@ -58,6 +67,21 @@ Public Class Package_Controller
                 End Select
             Next
         End If
+
+    End Sub
+
+    Sub Add_Model_Diagram_Menu_Clicked()
+        ' Create a new Model_Diagram
+        Dim new_diagram As New Model_Diagram
+        new_diagram.Name = "New_Model_Diagram"
+        new_diagram.Create_UUID()
+        My_Package.Add_Diagram(new_diagram)
+
+        ' Create its controller
+        Dim new_ctrl As New Model_Diagram_Controller(new_diagram, Me, My_Package_View)
+        new_ctrl.Set_Is_Under_Creation()
+        Dim edit_form As Software_Element_Edition_Form = new_ctrl.Create_Edition_Form()
+        edit_form.ShowDialog()
     End Sub
 
     Public Sub Add_Package_Context_Menu_Clicked()

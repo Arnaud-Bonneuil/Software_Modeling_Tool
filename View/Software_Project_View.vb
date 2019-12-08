@@ -141,6 +141,10 @@ Public Class Software_Project_View
         MsgBox("The new Package file path is invalid !", MsgBoxStyle.Critical, "Error")
     End Sub
 
+    Public Function Add_New_Diagram_Page(diagram_name As String) As TabPage
+        Return Main_Window.Add_New_Diagram_Page(diagram_name)
+    End Function
+
 End Class
 
 

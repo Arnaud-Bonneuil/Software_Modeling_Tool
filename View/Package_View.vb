@@ -80,7 +80,7 @@ Public Class Package_Browser_Context_Menu
                                                       Handles Sub_Context_Menu_Add_Diagram.Click
         Dim ctrl As Package_Controller = CType(Get_Controller(), Package_Controller)
         If Not IsNothing(ctrl) Then
-            'ctrl.Add_Diagram_Clicked()
+            ctrl.Add_Model_Diagram_Menu_Clicked()
         End If
     End Sub
 

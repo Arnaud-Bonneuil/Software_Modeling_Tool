@@ -13,17 +13,10 @@ Public Class Model_Diagram
         Return GetType(Package)
     End Function
 
-    Public Overrides Sub Add_Element(new_child As Software_Element)
-    End Sub
-
-    Public Overrides Sub Remove_Element(old_child As Software_Element)
-    End Sub
-
 End Class
 
 Public MustInherit Class Model_Diagram_Element
 
-    '<XmlAttribute(DataType:="string")>
     Public Software_Element_Ref As Guid
 
 End Class

@@ -223,6 +223,10 @@ Public Class Software_Project_Controller
 
     End Sub
 
+    Public Function Add_New_Diagram_Page(diagram_name As String) As TabPage
+        Return My_View.Add_New_Diagram_Page(diagram_name)
+    End Function
+
 
     '=============================================================================================='
     ' Private methods
@@ -301,5 +305,7 @@ Public Class Software_Project_Controller
         Is_Project_Modified = False
         My_Top_Level_Package_Controllers_List = Nothing
     End Sub
+
+
 
 End Class

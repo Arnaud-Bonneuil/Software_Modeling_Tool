@@ -76,6 +76,7 @@
     <Compile Include="Controller\Data_Type\Enumerated_Data_Type_Controller.vb" />
     <Compile Include="Controller\Data_Type\Physical_Data_Type_Controller.vb" />
     <Compile Include="Controller\Data_Type\Structured_Data_Type_Controller.vb" />
+    <Compile Include="Controller\Model_Diagram_Controller.vb" />
     <Compile Include="Controller\Package_Controller.vb" />
     <Compile Include="Controller\Software_Element_Controller.vb" />
     <Compile Include="Controller\Software_Project_Controller.vb" />
@@ -115,6 +116,9 @@
     </Compile>
     <Compile Include="View\Main_Window.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Model_Diagram_View.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\Package_View.vb">
       <SubType>Component</SubType>

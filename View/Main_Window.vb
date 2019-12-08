@@ -86,9 +86,18 @@
         My_Model_Browser.Nodes.Clear()
     End Sub
 
+    Function Add_New_Diagram_Page(diagram_name As String) As TabPage
+        Dim new_page As New TabPage
+        new_page.Text = diagram_name
+        My_Diagram_Area.Controls.Add(new_page)
+        Return new_page
+    End Function
+
     Public Sub Clear_Diagram_Area()
 
     End Sub
+
+
 
     Private Sub Load_Project_Clicked(sender As Object, e As EventArgs) _
                                                          Handles Sub_Menu_Load_Existing_Poject.Click
@@ -125,6 +134,7 @@ Public Class Model_Browser
     Public Elmt_CtxtMenu As Software_Element_Browser_Context_Menu
     Public Top_Level_Pkg_CtxtMenu As Top_Level_Package_Browser_Context_Menu
     Public Pkg_CtxtMenu As Package_Browser_Context_Menu
+    Public Model_Diagram_CtxtMenu As Model_Diagram_Context_Menu
     Public Enum_CtxtMenu As Enumerated_Data_Type_Browser_Context_Menu
     Public Structure_CtxtMenu As Structured_Data_Type_Browser_Context_Menu
 
@@ -147,9 +157,6 @@ Public Class Model_Browser
 
             my_icon = New Icon("Basic_Type.ico")
             icon_list.Images.Add("Basic_Type", my_icon)
-            icon_list.Images.Add("Basic_Integer_Type", my_icon)
-            icon_list.Images.Add("Basic_Boolean_Type", my_icon)
-            icon_list.Images.Add("Basic_Floating_Point_Type", my_icon)
 
             my_icon = New Icon("Enumerated_Data_Type.ico")
             icon_list.Images.Add("Enumerated_Data_Type", my_icon)
@@ -166,9 +173,6 @@ Public Class Model_Browser
             my_icon = New Icon("Structured_Data_Type.ico")
             icon_list.Images.Add("Structured_Data_Type", my_icon)
 
-            'my_icon = New Icon("Event_Interface.ico")
-            'icon_list.Images.Add("Event_Interface", my_icon)
-
             ImageList = icon_list
         Catch
 
@@ -178,6 +182,7 @@ Public Class Model_Browser
         Predefined_Elmt_CtxtMenu = New Predefined_Element_Browser_Context_Menu(Me)
         Elmt_CtxtMenu = New Software_Element_Browser_Context_Menu(Me)
         Top_Level_Pkg_CtxtMenu = New Top_Level_Package_Browser_Context_Menu(Me)
+        Model_Diagram_CtxtMenu = New Model_Diagram_Context_Menu(Me)
         Enum_CtxtMenu = New Enumerated_Data_Type_Browser_Context_Menu(Me)
         Structure_CtxtMenu = New Structured_Data_Type_Browser_Context_Menu(Me)
         Pkg_CtxtMenu = New Package_Browser_Context_Menu(Me)
@@ -188,7 +193,7 @@ End Class
 
 Public Class Diagram_Area
 
-    Inherits Panel
+    Inherits TabControl
 
 
 
