@@ -6,6 +6,7 @@ Public Class Enumerated_Data_Type_Controller
     Private My_Enum As Enumerated_Data_Type
     Private My_View As Enumerated_Data_Type_View
 
+
     Public Overrides Function Get_Element() As Software_Element
         Return My_Enum
     End Function
@@ -46,6 +47,25 @@ Public Class Enumerated_Data_Type_Controller
         Dim edit_form As Software_Element_Edition_Form = enumeral_ctrl.Create_Edition_Form()
         edit_form.ShowDialog()
 
+    End Sub
+
+    Public Overrides Sub Draw_Figure(page As TabPage, diagram_elmt As Model_Diagram_Element)
+
+        ' Build list of enumeral name/value/ctrl
+        Dim enumeral_name_list As New List(Of String)
+        Dim enumeral_value_list As New List(Of UInteger)
+        For Each ctrl In Me.Children_Controller
+            Dim element As Enumerated_Data_Type_Enumeral
+            element = CType(ctrl.Get_Element, Enumerated_Data_Type_Enumeral)
+            enumeral_name_list.Add(element.Name)
+            enumeral_value_list.Add(element.Value)
+        Next
+
+        Dim new_fig As Software_Element_Square_Figure
+        new_fig = My_View.Draw_On_Diagram_Page(
+            page,
+            CType(diagram_elmt, Square_Model_Diagram_Element),
+            My_Enum.Name, My_Enum.Description)
     End Sub
 
 End Class

@@ -45,11 +45,11 @@ Public MustInherit Class Edition_Form
     Private UUID_TextBox As TextBox
     Public Description_TextBox As RichTextBox
 
-    Protected Shared Left_Margin As Integer = 10
-    Protected Shared Title_Height As Integer = 25
+    Protected Const Left_Margin As Integer = 10
+    Protected Const Title_Height As Integer = 25
     Protected Shared Title_Size As Size = New Size(100, Title_Height)
-    Protected Shared Field_Abscissa As Integer = 120
-    Protected Shared Field_Width As Integer = 350
+    Protected Const Field_Abscissa As Integer = 120
+    Protected Const Field_Width As Integer = 350
 
     Public Sub New(
         a_controller As Controller,

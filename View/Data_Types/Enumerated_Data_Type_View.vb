@@ -15,6 +15,19 @@ Public Class Enumerated_Data_Type_View
         Node.ContextMenuStrip = CType(Node.TreeView, Model_Browser).Enum_CtxtMenu
     End Sub
 
+    Function Draw_On_Diagram_Page(
+            page As TabPage,
+            a_diagram_element As Square_Model_Diagram_Element,
+            a_name As String,
+            a_description As String) As Software_Element_Square_Figure
+
+        Dim fig As New Enumerated_Data_Type_Figure(My_Controller, a_diagram_element, a_name, a_description)
+        page.Controls.Add(fig)
+
+        Return fig
+
+    End Function
+
 End Class
 
 
@@ -108,6 +121,23 @@ Public Class Enumerated_Data_Type_Enumeral_Edition_Form
     Public Overrides Sub Set_Read_Only()
         MyBase.Set_Read_Only()
         Value_TextBox.ReadOnly = True
+    End Sub
+
+End Class
+
+'=================================================================================================='
+Public Class Enumerated_Data_Type_Figure
+    Inherits Software_Element_Square_Figure
+
+    Public Sub New(a_ctrl As Software_Element_Controller,
+            a_diagram_element As Square_Model_Diagram_Element,
+            a_name As String,
+            a_description As String)
+
+        MyBase.New(a_ctrl, a_diagram_element, a_name, a_description)
+
+        Me.Border_Color = Pens.DarkRed
+
     End Sub
 
 End Class

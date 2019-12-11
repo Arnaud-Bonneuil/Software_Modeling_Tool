@@ -223,8 +223,8 @@ Public Class Software_Project_Controller
 
     End Sub
 
-    Public Function Add_New_Diagram_Page(diagram_name As String) As TabPage
-        Return My_View.Add_New_Diagram_Page(diagram_name)
+    Public Function Get_Diagram_Area() As Diagram_Area
+        Return My_View.Main_Window.My_Diagram_Area
     End Function
 
 

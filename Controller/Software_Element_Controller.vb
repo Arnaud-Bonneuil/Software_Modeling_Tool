@@ -48,6 +48,18 @@ Public MustInherit Class Software_Element_Controller
         Return proj_ctrl.Controller_Dico_By_Element_UUID
     End Function
 
+    Public Function Get_Controller_By_Element_UUID(element_uuid As Guid) _
+                                                                      As Software_Element_Controller
+
+        Dim dico As Dictionary(Of Guid, Software_Element_Controller)
+        dico = Get_Controller_Dico_By_Element_UUID()
+
+        If dico.ContainsKey(element_uuid) Then
+            Return dico(element_uuid)
+        Else
+            Return Nothing
+        End If
+    End Function
 
     ' Return the list of a the controller of a Data_Type within the project
     Public Function Get_Controllers_Of_Data_Type() As List(Of Software_Element_Controller)
@@ -279,6 +291,52 @@ Public MustInherit Class Software_Element_Controller
 
 
     '=============================================================================================='
+    ' Methods for model diagrams
+    '=============================================================================================='
+    Public Overridable Sub Draw_Figure(page As TabPage, diagram_elmt As Model_Diagram_Element)
+
+    End Sub
+
+    Public Sub Name_Edited_Within_Diagram(new_name As String)
+
+        Dim element As Software_Element = Get_Element()
+        Dim view As Software_Element_View = Get_View()
+
+        ' Analyze the new Name
+        If Not element.Is_Name_Valid(new_name) Then
+            view.Display_Name_Is_Invalid()
+        Else
+            ' Apply the new name
+            If element.Name <> new_name Then
+                element.Name = new_name
+                Me.Set_Top_Level_Package_Controller_Status_To_Modified()
+            End If
+        End If
+        view.Update_All_Name_Views(element.Name)
+
+    End Sub
+
+    Public Sub Description_Edited_Within_Diagram(new_description As String)
+
+        Dim element As Software_Element = Get_Element()
+        Dim view As Software_Element_View = Get_View()
+
+        ' Analyze the new description
+        If Not element.Is_Description_Valid(new_description) Then
+            view.Display_Description_Is_Invalid()
+        Else
+            ' Apply the new description
+            If element.Description <> new_description Then
+                element.Description = new_description
+                Me.Set_Top_Level_Package_Controller_Status_To_Modified()
+            End If
+        End If
+        view.Update_All_Description_Views(element.Description)
+
+    End Sub
+
+
+    '=============================================================================================='
     ' Private methods
     '=============================================================================================='
     Private Function Get_Controllers_By_Element_MetaClass(sw_elmt_type As Type) _
@@ -311,6 +369,8 @@ Public MustInherit Class Software_Element_Controller
             child.Get_All_Ctrl_By_Elmt_MetaClass(ctrl_list, meta_class)
         Next
     End Sub
+
+
 
 End Class
 

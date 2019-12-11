@@ -6,7 +6,7 @@
 
     Private WithEvents Vertical_Split_Container As SplitContainer
     Public WithEvents My_Model_Browser As Model_Browser
-    Private WithEvents My_Diagram_Area As Diagram_Area
+    Public WithEvents My_Diagram_Area As Diagram_Area
     Private WithEvents Main_Menu As MenuStrip
     Private WithEvents Project_Menu As ToolStripMenuItem
     Private WithEvents Sub_Menu_Load_Existing_Poject As ToolStripMenuItem
@@ -86,18 +86,9 @@
         My_Model_Browser.Nodes.Clear()
     End Sub
 
-    Function Add_New_Diagram_Page(diagram_name As String) As TabPage
-        Dim new_page As New TabPage
-        new_page.Text = diagram_name
-        My_Diagram_Area.Controls.Add(new_page)
-        Return new_page
-    End Function
-
     Public Sub Clear_Diagram_Area()
-
+        My_Diagram_Area.TabPages.Clear()
     End Sub
-
-
 
     Private Sub Load_Project_Clicked(sender As Object, e As EventArgs) _
                                                          Handles Sub_Menu_Load_Existing_Poject.Click
@@ -196,5 +187,12 @@ Public Class Diagram_Area
     Inherits TabControl
 
 
+    Function Add_New_Diagram_Page(diagram_name As String) As TabPage
+        Dim new_page As New TabPage
+        new_page.Text = diagram_name
+        Me.Controls.Add(new_page)
+        Return new_page
+    End Function
 
 End Class
+
